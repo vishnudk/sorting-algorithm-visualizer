@@ -23,9 +23,113 @@ class App:
         self.activate=0
         self.searchSpeed=2
         self.flag=0
-    
+        self.pivot=0
+        self.end=0
+        self.CheckLine1=-1
+        self.CheckLine2=-1
     def sort(self):
          pass   
+    def QickSort(self,*arg):
+        if self.count==0:
+            self.pivot=self.prvI=arg[0]
+            self.end=self.prvJ=arg[1]
+            self.count=1
+            self.CheckLine1=self.canvas.create_line(self.canvas.coords(self.line[self.pivot])[0],max(self.array),self.canvas.coords(self.line[self.pivot])[2],self.canvas.coords(self.line[self.pivot])[3],width=10,fill='green')
+            self.CheckLine2=self.canvas.create_line(self.canvas.coords(self.line[self.end])[0],max(self.array),self.canvas.coords(self.line[self.end])[2],self.canvas.coords(self.line[self.end])[3],width=10,fill='green')
+           
+  
+        while self.prvJ>=self.prvI and self.prvJ>self.pivot and self.prvI<self.end:
+  
+            if self.flag==0 and self.array[self.prvI]>=self.array[self.pivot] :
+                self.prvI=self.prvI+1   
+                self.flag=1
+                self.canvas.move(self.CheckLine1,10,0)
+                break
+                # self.canvas.after(1000,self.QickSort)
+            if self.flag==1 and self.array[self.prvJ]<=self.array[self.pivot] : 
+                self.prvJ=self.prvJ-1 
+                self.canvas.move(self.CheckLine2,-10,0)
+                self.flag=2
+                break
+            self.flag=0
+                # self.canvas.after(1000,self.QickSort)
+            if self.prvJ>self.prvI and self.array[self.prvI]<self.array[self.pivot] and self.array[self.prvJ]>self.array[self.pivot]:
+                self.array[self.prvI],self.array[self.prvJ]=self.array[self.prvJ],self.array[self.prvI]
+                self.canvas.move(self.line[self.prvI],(self.prvJ-self.prvI)*10,0)
+                self.canvas.move(self.line[self.prvJ],(self.prvI-self.prvJ)*10,0)
+                
+                self.line[self.prvI],self.line[self.prvJ]=self.line[self.prvJ],self.line[self.prvI]  
+                # self.flag=0
+                # break
+           
+        if self.prvJ>=self.prvI and self.prvJ>self.pivot and self.prvI<self.end:
+            # pass
+            # print("hellooo")
+            
+            self.QickSort()
+            # self.canvas.after(1,self.QickSort)
+        else:
+            self.array[self.prvJ],self.array[self.pivot]=self.array[self.pivot],self.array[self.prvJ]
+            self.canvas.move(self.line[self.pivot],(self.prvJ-self.pivot)*10,0)
+            self.canvas.move(self.line[self.prvJ],(self.pivot-self.prvJ)*10,0)
+            
+            self.line[self.prvJ],self.line[self.pivot]=self.line[self.pivot],self.line[self.prvJ]
+            tmpI=self.prvI
+            tmpJ=self.prvJ
+            tmpPivot=self.pivot
+            tmpEnd=self.end
+            if tmpJ-1>tmpPivot:
+                # time.sleep(1)
+                try:
+                    self.canvas.delete(self.CheckLine1)
+                    # self.canvas.delete(self.CheckLine2)
+                except:
+                    pass
+                try:
+                    # self.canvas.delete(self.CheckLine1)
+                    self.canvas.delete(self.CheckLine2)
+                except:
+                    pass
+                print(1)
+                self.flag=0
+                self.count=0
+                self.QickSort(tmpPivot,tmpJ-1)
+            if tmpJ+1<tmpEnd:
+                # time.sleep(1)
+                try:
+                    self.canvas.delete(self.CheckLine1)
+                    # self.canvas.delete(self.CheckLine2)
+                except:
+                    pass
+                try:
+                    # self.canvas.delete(self.CheckLine1)
+                    self.canvas.delete(self.CheckLine2)
+                except:
+                    pass
+                print(2)
+                self.flag=0
+                self.count=0
+                self.QickSort(tmpJ+1,tmpEnd) 
+    
+            
+
+        
+
+
+    def CallQuicksort(self):
+        self.QickSort(0,self.arrayLength-1)
+        try:
+            self.canvas.delete(self.CheckLine1)
+            # self.canvas.delete(self.CheckLine2)
+        except:
+            pass
+        try:
+            # self.canvas.delete(self.CheckLine1)
+            self.canvas.delete(self.CheckLine2)
+        except:
+            pass
+        
+        # self.printArray()
     def bubbleSort(self):
         if self.count==0:
             self.count=1
@@ -58,7 +162,7 @@ class App:
                 self.prvI=self.prvI+1
                 self.prvJ=0
             break
-        if self.prvI<self.arrayLength-1 and self.flag==0:
+        if self.flag==0:
             self.canvas.after(20-int(self.searchSpeed),self.bubbleSort)
         elif self.prvI<self.arrayLength-1:
             self.canvas.after(100-int(self.searchSpeed),self.bubbleSort)
@@ -208,7 +312,7 @@ class App:
         algoritmMenu=Menu(menu)
         menu.add_cascade(label='Algorithms',menu=algoritmMenu)
         algoritmMenu.add_command(label='Buble sort',command=self.bubbleSort)
-        algoritmMenu.add_command(label='Quick sort',command=self.sort)
+        algoritmMenu.add_command(label='Quick sort',command=self.CallQuicksort)
         algoritmMenu.add_command(label='Merge sort',command=self.sort)
         algoritmMenu.add_command(label='Selection sort',command=self.selectionSort)
         self.count=0
