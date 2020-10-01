@@ -40,76 +40,67 @@ class App:
   
         while self.prvJ>=self.prvI and self.prvJ>self.pivot and self.prvI<self.end:
   
-            if self.flag==0 and self.array[self.prvI]>=self.array[self.pivot] :
+            if self.array[self.prvI]>=self.array[self.pivot] :
                 self.prvI=self.prvI+1   
                 self.flag=1
                 self.canvas.move(self.CheckLine1,10,0)
-                break
-                # self.canvas.after(1000,self.QickSort)
-            if self.flag==1 and self.array[self.prvJ]<=self.array[self.pivot] : 
+                self.canvas.after(20-int(self.searchSpeed))
+                self.canvas.update_idletasks()
+                self.canvas.update()
+               
+            if   self.array[self.prvJ]<=self.array[self.pivot] : 
                 self.prvJ=self.prvJ-1 
                 self.canvas.move(self.CheckLine2,-10,0)
                 self.flag=2
-                break
-            self.flag=0
-                # self.canvas.after(1000,self.QickSort)
+                self.canvas.after( 20-int(self.searchSpeed))
+                self.canvas.update_idletasks()
+                self.canvas.update()
+              
             if self.prvJ>self.prvI and self.array[self.prvI]<self.array[self.pivot] and self.array[self.prvJ]>self.array[self.pivot]:
                 self.array[self.prvI],self.array[self.prvJ]=self.array[self.prvJ],self.array[self.prvI]
                 self.canvas.move(self.line[self.prvI],(self.prvJ-self.prvI)*10,0)
                 self.canvas.move(self.line[self.prvJ],(self.prvI-self.prvJ)*10,0)
-                
                 self.line[self.prvI],self.line[self.prvJ]=self.line[self.prvJ],self.line[self.prvI]  
-                # self.flag=0
-                # break
+                self.canvas.after(20-int(self.searchSpeed))
+                self.canvas.update_idletasks()
+                self.canvas.update()
+               
            
-        if self.prvJ>=self.prvI and self.prvJ>self.pivot and self.prvI<self.end:
-            # pass
-            # print("hellooo")
-            
-            self.QickSort()
-            # self.canvas.after(1,self.QickSort)
-        else:
-            self.array[self.prvJ],self.array[self.pivot]=self.array[self.pivot],self.array[self.prvJ]
-            self.canvas.move(self.line[self.pivot],(self.prvJ-self.pivot)*10,0)
-            self.canvas.move(self.line[self.prvJ],(self.pivot-self.prvJ)*10,0)
-            
-            self.line[self.prvJ],self.line[self.pivot]=self.line[self.pivot],self.line[self.prvJ]
-            tmpI=self.prvI
-            tmpJ=self.prvJ
-            tmpPivot=self.pivot
-            tmpEnd=self.end
-            if tmpJ-1>tmpPivot:
-                # time.sleep(1)
-                try:
-                    self.canvas.delete(self.CheckLine1)
-                    # self.canvas.delete(self.CheckLine2)
-                except:
-                    pass
-                try:
-                    # self.canvas.delete(self.CheckLine1)
-                    self.canvas.delete(self.CheckLine2)
-                except:
-                    pass
-                print(1)
-                self.flag=0
-                self.count=0
-                self.QickSort(tmpPivot,tmpJ-1)
-            if tmpJ+1<tmpEnd:
-                # time.sleep(1)
-                try:
-                    self.canvas.delete(self.CheckLine1)
-                    # self.canvas.delete(self.CheckLine2)
-                except:
-                    pass
-                try:
-                    # self.canvas.delete(self.CheckLine1)
-                    self.canvas.delete(self.CheckLine2)
-                except:
-                    pass
-                print(2)
-                self.flag=0
-                self.count=0
-                self.QickSort(tmpJ+1,tmpEnd) 
+       
+        self.array[self.prvJ],self.array[self.pivot]=self.array[self.pivot],self.array[self.prvJ]
+        self.canvas.itemconfig(self.line[self.pivot],fill='blue')
+        self.canvas.move(self.line[self.pivot],(self.prvJ-self.pivot)*10,0)
+        self.canvas.move(self.line[self.prvJ],(self.pivot-self.prvJ)*10,0)
+        
+        self.line[self.prvJ],self.line[self.pivot]=self.line[self.pivot],self.line[self.prvJ]
+        tmpI=self.prvI
+        tmpJ=self.prvJ
+        tmpPivot=self.pivot
+        tmpEnd=self.end
+        if tmpJ-1>tmpPivot:
+            try:
+                self.canvas.delete(self.CheckLine1)
+            except:
+                pass
+            try:
+                self.canvas.delete(self.CheckLine2)
+            except:
+                pass
+            self.flag=0
+            self.count=0
+            self.QickSort(tmpPivot,tmpJ-1)
+        if tmpJ+1<tmpEnd:
+            try:
+                self.canvas.delete(self.CheckLine1)
+            except:
+                pass
+            try:
+                self.canvas.delete(self.CheckLine2)
+            except:
+                pass
+            self.flag=0
+            self.count=0
+            self.QickSort(tmpJ+1,tmpEnd) 
     
             
 
