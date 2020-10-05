@@ -5,7 +5,8 @@ from speech_virus import voice
 import random
 import time
 import os
-# from ttkthemes import themed_tk
+# from ttkthemes import themed_tk as tk
+# # from ttkthemes import themed_tk
 # from ttkthemes import ThemedTk
 import signal
 from tkinter import ttk
@@ -124,6 +125,7 @@ class App:
         
     def heapSort(self):
         sr=[]
+        lines=[]
         for i in range(len(self.array)):
             # for _ in range(len(self.array)):
             self.maxHeap(len(self.array)-1)
@@ -138,7 +140,7 @@ class App:
             sr.append(self.array.pop(0))  
             self.canvas.move(self.line[0],10*(len(self.array)),0)
             self.canvas.itemconfig(self.line[0],fill='blue')
-            self.line.pop(0)
+            lines.append(self.line.pop(0))
             for i in range(len(self.line)):
                 self.canvas.move(self.line[i],-10,0)
             # self.line[0],self.line[len(self.array)]=self.line[len(self.array)],self.line[0]
@@ -146,8 +148,13 @@ class App:
             self.canvas.update_idletasks()
             self.canvas.update()
         self.array=sr[:]
+        for i in lines:
+
+            self.canvas.itemconfig(i,fill='red')
         # print(self.array)
     def callHeapSort(self):
+        l2=Label(self.app, text = "Heap Sort") 
+        l2.place(x=600,y=10)
         self.heapSort()
         # self.printArray()
     def QickSort(self,*arg):
@@ -255,6 +262,8 @@ class App:
         #     pass
 
     def CallQuicksort(self):
+        l2=Label(self.app, text = "Quick Sort") 
+        l2.place(x=600,y=10)
        
         self.QickSort(0,self.arrayLength-1)
         try:
@@ -328,11 +337,15 @@ class App:
         self.reInit()
        
     def callBubbleSort(self):
+        l2=Label(self.app, text = "Bubble Sort") 
+        l2.place(x=600,y=10)
         self.bubbleSort()
+        
         
        
     def selectionSort(self):
-     
+        l2=Label(self.app, text = "Selection Sort") 
+        l2.place(x=600,y=10)
         while self.prvI<self.arrayLength-1:
             if self.prvJ>=self.arrayLength or self.count==0:
                 try :
@@ -471,6 +484,9 @@ class App:
 if __name__ == "__main__":
     # m = ThemedTk(theme='radiance')
     m=Tk()
+    # m = tk.ThemedTk()
+    # m.get_themes()                 # Returns a list of all themes that can be set
+    # m.set_theme("arc")  
     # ttk.Style().theme_use('clam')
     m.title("Algoritam Visualizer")
     w =  Canvas(m,width=100,height=100)
