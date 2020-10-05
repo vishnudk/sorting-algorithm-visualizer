@@ -1,7 +1,22 @@
-
+import multiprocessing as mp
+# import numpy
 from tkinter import *
+from speech_virus import voice
 import random
 import time
+import os
+# from ttkthemes import themed_tk
+# from ttkthemes import ThemedTk
+import signal
+from tkinter import ttk
+
+# class for node of tree
+class node:
+    def __init__(self,data):
+        self.data=data
+        self.leftNode=None
+        self.rightNode=None
+        
 class App:
     def __init__(self,canvas,app):
         self.canvas=canvas
@@ -27,10 +42,117 @@ class App:
         self.end=0
         self.CheckLine1=-1
         self.CheckLine2=-1
+    def reInit(self):
+        # self.canvas=canvas
+        # self.app=app
+        # self.array=[]
+        # self.arrayLength=0
+        # self.arraySize=0
+        self.line=[]
+        self.CheckLine=-1
+        # self.coords=[]
+        self.index=1
+        self.max=-1
+        self.pos = 0
+        self.prvI=-1
+        self.prvJ=0
+        self.count=0
+        self.maxPos=0
+        self.prvArraySize=0
+        self.activate=0
+        # self.searchSpeed=2
+        self.flag=0
+        self.pivot=0
+        self.end=0
+        self.CheckLine1=-1
+        self.CheckLine2=-1
     def sort(self):
-         pass   
+         pass 
+    def maxHeap(self,i):
+        if i>0:
+            try:
+                self.canvas.delete(self.CheckLine)
+            except:
+                pass
+            try:
+                self.canvas.delete(self.CheckLine1)
+            except:
+                pass
+            if i%2==0:
+                childLinePos=self.canvas.coords(self.line[i])
+                childLinePos[1]=max(self.array)
+                self.CheckLine=self.canvas.create_line(childLinePos)
+                root=int((i-2)/2)
+                rootLinePos=self.canvas.coords(self.line[root])
+                rootLinePos[1]=max(self.array)
+                self.CheckLine1=self.canvas.create_line(rootLinePos)
+                self.canvas.after(20-int(self.searchSpeed))
+                self.canvas.update_idletasks()
+                self.canvas.update()
+                if self.array[root]>self.array[i]:
+                    self.array[root],self.array[i]=self.array[i],self.array[root]
+                    self.canvas.move(self.line[i],(root-i)*10,0)
+                    self.canvas.move(self.line[root],(i-root)*10,0)
+                    self.canvas.after(20-int(self.searchSpeed))
+                    self.canvas.update_idletasks()
+                    self.canvas.update()
+                    self.line[root],self.line[i]=self.line[i],self.line[root]
+
+
+                    
+                self.maxHeap(i-1)
+            else:
+                childLinePos=self.canvas.coords(self.line[i])
+                childLinePos[1]=max(self.array)
+                self.CheckLine=self.canvas.create_line(childLinePos,width=10,fill='green')
+                root=int((i-1)/2)
+                rootLinePos=self.canvas.coords(self.line[root])
+                rootLinePos[1]=max(self.array)
+                self.CheckLine1= self.canvas.create_line(rootLinePos,width=10,fill='green')
+                self.canvas.after(20-int(self.searchSpeed))
+                self.canvas.update_idletasks()
+                self.canvas.update()
+                if self.array[root]>self.array[i]:
+                    self.array[root],self.array[i]=self.array[i],self.array[root]
+                    self.canvas.move(self.line[i],(root-i)*10,0)
+                    self.canvas.move(self.line[root],(i-root)*10,0)
+                    self.canvas.after(20-int(self.searchSpeed))
+                    self.canvas.update_idletasks()
+                    self.canvas.update()
+                    self.line[root],self.line[i]=self.line[i],self.line[root]
+                self.maxHeap(i-1)
+        
+    def heapSort(self):
+        sr=[]
+        for i in range(len(self.array)):
+            # for _ in range(len(self.array)):
+            self.maxHeap(len(self.array)-1)
+            try:
+                self.canvas.delete(self.CheckLine)
+            except:
+                pass
+            try:
+                self.canvas.delete(self.CheckLine1)
+            except:
+                pass
+            sr.append(self.array.pop(0))  
+            self.canvas.move(self.line[0],10*(len(self.array)),0)
+            self.canvas.itemconfig(self.line[0],fill='blue')
+            self.line.pop(0)
+            for i in range(len(self.line)):
+                self.canvas.move(self.line[i],-10,0)
+            # self.line[0],self.line[len(self.array)]=self.line[len(self.array)],self.line[0]
+            self.canvas.after(20-int(self.searchSpeed))
+            self.canvas.update_idletasks()
+            self.canvas.update()
+        self.array=sr[:]
+        # print(self.array)
+    def callHeapSort(self):
+        self.heapSort()
+        # self.printArray()
     def QickSort(self,*arg):
         if self.count==0:
+           
             self.pivot=self.prvI=arg[0]
             self.end=self.prvJ=arg[1]
             self.count=1
@@ -47,15 +169,6 @@ class App:
                 self.canvas.after(20-int(self.searchSpeed))
                 self.canvas.update_idletasks()
                 self.canvas.update()
-               
-            if   self.array[self.prvJ]<=self.array[self.pivot] : 
-                self.prvJ=self.prvJ-1 
-                self.canvas.move(self.CheckLine2,-10,0)
-                self.flag=2
-                self.canvas.after( 20-int(self.searchSpeed))
-                self.canvas.update_idletasks()
-                self.canvas.update()
-              
             if self.prvJ>self.prvI and self.array[self.prvI]<self.array[self.pivot] and self.array[self.prvJ]>self.array[self.pivot]:
                 self.array[self.prvI],self.array[self.prvJ]=self.array[self.prvJ],self.array[self.prvI]
                 self.canvas.move(self.line[self.prvI],(self.prvJ-self.prvI)*10,0)
@@ -64,10 +177,26 @@ class App:
                 self.canvas.after(20-int(self.searchSpeed))
                 self.canvas.update_idletasks()
                 self.canvas.update()
+                
+                   
+            if   self.array[self.prvJ]<=self.array[self.pivot] : 
+                self.prvJ=self.prvJ-1 
+                self.canvas.move(self.CheckLine2,-10,0)
+                self.flag=2
+                self.canvas.after( 20-int(self.searchSpeed))
+                self.canvas.update_idletasks()
+                self.canvas.update()
+              
+            
                
            
        
         self.array[self.prvJ],self.array[self.pivot]=self.array[self.pivot],self.array[self.prvJ]
+       
+        # if arg[1]-arg[0]<=2:
+        #     for pos in range(arg[0],arg[1]+1):
+        #         self.canvas.itemconfig(self.line[pos],fill='blue')
+        # else:
         self.canvas.itemconfig(self.line[self.pivot],fill='blue')
         self.canvas.move(self.line[self.pivot],(self.prvJ-self.pivot)*10,0)
         self.canvas.move(self.line[self.prvJ],(self.pivot-self.prvJ)*10,0)
@@ -88,7 +217,13 @@ class App:
                 pass
             self.flag=0
             self.count=0
+            # newpid = os.fork()
+            # p1 = mp.Process(target= self.QickSort(tmpPivot,tmpJ-1))
             self.QickSort(tmpPivot,tmpJ-1)
+            
+            # os.kill(newpid, signal.SIGKILL)
+            for pos in range(tmpPivot,tmpJ-1):
+                self.canvas.itemconfig(self.line[pos],fill='blue')
         if tmpJ+1<tmpEnd:
             try:
                 self.canvas.delete(self.CheckLine1)
@@ -100,43 +235,69 @@ class App:
                 pass
             self.flag=0
             self.count=0
-            self.QickSort(tmpJ+1,tmpEnd) 
-    
-            
-
-        
-
+            # newpid = os.fork()
+            # p2 = mp.Process(target= self.QickSort(tmpJ+1,tmpEnd) )
+            self.QickSort(tmpJ+1,tmpEnd)
+            # os.kill(newpid, signal.SIGKILL)
+            for pos in range(tmpJ+1,tmpEnd+1):
+                self.canvas.itemconfig(self.line[pos],fill='blue')
+        # try:self.canvas.itemconfig(self.
+        #     p1.start()
+        # except:
+        #     pass
+        # try:
+        #     p2.start()
+        # except:
+        #     pass
+        # try:
+        #     p1.join()
+        # except:
+        #     pass
 
     def CallQuicksort(self):
+       
         self.QickSort(0,self.arrayLength-1)
         try:
             self.canvas.delete(self.CheckLine1)
-            # self.canvas.delete(self.CheckLine2)
+           
         except:
             pass
         try:
-            # self.canvas.delete(self.CheckLine1)
+           
             self.canvas.delete(self.CheckLine2)
         except:
             pass
         
-        # self.printArray()
+        for i in range(len(self.line)):
+            self.canvas.itemconfig(self.line[i],fill='red')
+            
+      
+        
+        self.reInit()
     def bubbleSort(self):
         if self.count==0:
+            try:
+                self.canvas.delete(self.CheckLine)
+            except:
+                pass
             self.count=1
             self.prvI=self.prvI+1
             self.CheckLine = self.canvas.create_line(self.canvas.coords(self.line[0])[0],max(self.array),self.canvas.coords(self.line[0])[2],self.canvas.coords(self.line[0])[3],width=10,fill='green')
-        while self.prvI<self.arrayLength-1:
+        while self.prvI<self.arrayLength:
             while self.prvJ<self.arrayLength-1-self.prvI:
-                # self.canvas.move
+              
                 if self.flag==0:
                     self.canvas.move(self.CheckLine,10,0)
                     self.flag=1
-                    break
+                    self.canvas.after(20-int(self.searchSpeed))
+                    self.canvas.update_idletasks()
+                    self.canvas.update()
                 if self.flag==1:
                     self.canvas.move(self.CheckLine,-10,0)
                     self.flag=2
-                    break
+                    self.canvas.after(20-int(self.searchSpeed))
+                    self.canvas.update_idletasks()
+                    self.canvas.update()
                 self.flag=0
                 self.canvas.move(self.CheckLine,10,0)
                 if self.array[self.prvJ]<self.array[self.prvJ+1]:
@@ -145,33 +306,31 @@ class App:
                     self.canvas.move(self.line[self.prvJ+1],-10,0)
                     self.line[self.prvJ],self.line[self.prvJ+1]=self.line[self.prvJ+1],self.line[self.prvJ]
                 self.prvJ=self.prvJ+1
-                break
+                self.canvas.after(20-int(self.searchSpeed))
+                self.canvas.update_idletasks()
+                self.canvas.update()
             if self.prvJ>=self.arrayLength-1-self.prvI:
                 self.canvas.delete(self.CheckLine)
                 self.CheckLine = self.canvas.create_line(self.canvas.coords(self.line[0])[0],max(self.array),self.canvas.coords(self.line[0])[2],self.canvas.coords(self.line[0])[3],width=10,fill='green')
                 self.canvas.itemconfig(self.line[self.arrayLength-1-self.prvI],fill='blue')
                 self.prvI=self.prvI+1
                 self.prvJ=0
-            break
-        if self.flag==0:
-            self.canvas.after(20-int(self.searchSpeed),self.bubbleSort)
-        elif self.prvI<self.arrayLength-1:
-            self.canvas.after(100-int(self.searchSpeed),self.bubbleSort)
-        else:
-            self.canvas.itemconfig(self.line[0],fill='blue')
-            self.canvas.delete(self.CheckLine)
-            # print (self.array)
-            self.CheckLine=-1
-            self.coords=[]
-            self.index=1
-            self.max=-1
-            self.pos = 0
-            self.prvI=-1
-            self.prvJ=1
-            self.count=0
-            self.maxPos=0
-       
+                self.canvas.after(20-int(self.searchSpeed))
+                self.canvas.update_idletasks()
+                self.canvas.update()
+            
     
+        self.canvas.itemconfig(self.line[0],fill='blue')
+        self.canvas.delete(self.CheckLine)
+        self.prvJ=self.prvI=0
+        for i in range(len(self.line)):
+            self.canvas.itemconfig(self.line[i],fill='red')
+        self.reInit()
+       
+    def callBubbleSort(self):
+        self.bubbleSort()
+        
+       
     def selectionSort(self):
      
         while self.prvI<self.arrayLength-1:
@@ -214,15 +373,9 @@ class App:
         else:
             self.canvas.delete(self.CheckLine)
             # print (self.array)
-            self.CheckLine=-1
-            self.coords=[]
-            self.index=1
-            self.max=-1
-            self.pos = 0
-            self.prvI=-1
-            self.prvJ=1
-            self.count=0
-            self.maxPos=0
+            for i in range(len(self.line)):
+                self.canvas.itemconfig(self.line[i],fill='red')
+            self.reInit()
      
       
     def checkArraySize(self,size):
@@ -302,10 +455,11 @@ class App:
         helpmenu.add_command(label='About') 
         algoritmMenu=Menu(menu)
         menu.add_cascade(label='Algorithms',menu=algoritmMenu)
-        algoritmMenu.add_command(label='Buble sort',command=self.bubbleSort)
+        algoritmMenu.add_command(label='Buble sort',command=self.callBubbleSort)
         algoritmMenu.add_command(label='Quick sort',command=self.CallQuicksort)
-        algoritmMenu.add_command(label='Merge sort',command=self.sort)
         algoritmMenu.add_command(label='Selection sort',command=self.selectionSort)
+        algoritmMenu.add_command(label='Merge sort',command=self.sort)
+        algoritmMenu.add_command(label='Heap sort',command=self.callHeapSort)
         self.count=0
         # time.sleep(.5)
         # print("test")
@@ -315,7 +469,9 @@ class App:
 
 
 if __name__ == "__main__":
-    m = Tk()
+    # m = ThemedTk(theme='radiance')
+    m=Tk()
+    # ttk.Style().theme_use('clam')
     m.title("Algoritam Visualizer")
     w =  Canvas(m,width=100,height=100)
     w.config(width=w.winfo_screenwidth(), height=w.winfo_screenheight())
