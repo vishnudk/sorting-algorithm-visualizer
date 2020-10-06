@@ -1,5 +1,6 @@
 import multiprocessing as mp
 # import numpy
+import mergeSort as ms
 from tkinter import *
 from speech_virus import voice
 import random
@@ -67,8 +68,36 @@ class App:
         self.end=0
         self.CheckLine1=-1
         self.CheckLine2=-1
-    def sort(self):
-         pass 
+    def merge(slef,l,r):
+    # considering that both the array is already sorted 
+        arr=[]
+        while len(l)>0 and len(r)>0:
+            if l[0]>r[0]:
+                arr.append(l[0])
+                l.pop(0)
+            else:
+                arr.append(r[0])
+                r.pop(0)
+        arr.extend(r)
+        arr.extend(l)
+        return arr
+
+    def  mergeSort(self,arr):
+        # print(arr)
+        if len(arr)>0:
+            if len(arr)==1:
+                # print(arr)
+                return arr
+            else:
+                half=int(len(arr)/2)
+                l=self.mergeSort(arr[:half])
+                r=self.mergeSort(arr[half:])
+        
+                return self.merge(l,r)
+    def callMergeSort(self):
+        print(self.array)
+        self.array=self.mergeSort(self.array)
+        self.printArray()
     def maxHeap(self,i):
         if i>0:
             try:
@@ -382,7 +411,7 @@ class App:
 
 
         if self.prvI<self.arrayLength-1:
-            self.canvas.after(20-int(self.searchSpeed),self.selectionSort)
+            self.canvas.after(21-int(self.searchSpeed),self.selectionSort)
         else:
             self.canvas.delete(self.CheckLine)
             # print (self.array)
@@ -471,7 +500,7 @@ class App:
         algoritmMenu.add_command(label='Buble sort',command=self.callBubbleSort)
         algoritmMenu.add_command(label='Quick sort',command=self.CallQuicksort)
         algoritmMenu.add_command(label='Selection sort',command=self.selectionSort)
-        algoritmMenu.add_command(label='Merge sort',command=self.sort)
+        algoritmMenu.add_command(label='Merge sort',command=self.callMergeSort)
         algoritmMenu.add_command(label='Heap sort',command=self.callHeapSort)
         self.count=0
         # time.sleep(.5)
