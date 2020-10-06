@@ -68,35 +68,44 @@ class App:
         self.end=0
         self.CheckLine1=-1
         self.CheckLine2=-1
-    def merge(slef,l,r):
+    def merge(self,l,r,line,line1):
     # considering that both the array is already sorted 
         arr=[]
-        while len(l)>0 and len(r)>0:
-            if l[0]>r[0]:
-                arr.append(l[0])
-                l.pop(0)
-            else:
-                arr.append(r[0])
-                r.pop(0)
-        arr.extend(r)
-        arr.extend(l)
+        # while len(l)>0 and len(r)>0:
+        #     if l[0]>r[0]:
+        #         arr.append(l[0])
+        #         l.pop(0)
+        #     else:
+        #         arr.append(r[0])
+        #         r.pop(0)
+        # arr.extend(r)
+        # arr.extend(l)
+        j=0
+        i=len(l)-1
+        while i>=0 and j<len(r):
+            if l[i]>r[j]:
+                j=j+1
+            
+
         return arr
 
-    def  mergeSort(self,arr):
+    def  mergeSort(self,arr,start,end):
         # print(arr)
         if len(arr)>0:
             if len(arr)==1:
                 # print(arr)
                 return arr
             else:
-                half=int(len(arr)/2)
-                l=self.mergeSort(arr[:half])
-                r=self.mergeSort(arr[half:])
-        
-                return self.merge(l,r)
+                half=int((start+end)/2)
+                l=self.mergeSort(arr[:half],start,half-1)
+                lp=list([start,half-1])
+                r=self.mergeSort(arr[half:],half,end)
+                rp=list([half,end])
+
+                return self.merge(l,r,self.line[start:half],self.line[half:end],lp,rp)
     def callMergeSort(self):
         print(self.array)
-        self.array=self.mergeSort(self.array)
+        self.array=self.mergeSort(self.array,0,len(self.array)-1)
         self.printArray()
     def maxHeap(self,i):
         if i>0:
