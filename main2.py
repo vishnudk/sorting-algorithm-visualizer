@@ -77,6 +77,8 @@ class App:
                     self.array[i],self.array[i-1]=self.array[i-1],self.array[i]
                     self.canvas.move(self.line[i],-10,0)
                     self.canvas.move(self.line[i-1],10,0)
+                    self.canvas.itemconfig(self.line[i],fill='blue')
+                    self.canvas.itemconfig(self.line[i-1],fill='blue')
                     self.line[i],self.line[i-1]=self.line[i-1],self.line[i]
                     self.canvas.after(20-int(self.searchSpeed))
                     self.canvas.update_idletasks()
