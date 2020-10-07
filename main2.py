@@ -68,45 +68,37 @@ class App:
         self.end=0
         self.CheckLine1=-1
         self.CheckLine2=-1
-    def merge(self,l,r,line,line1):
-    # considering that both the array is already sorted 
-        arr=[]
-        # while len(l)>0 and len(r)>0:
-        #     if l[0]>r[0]:
-        #         arr.append(l[0])
-        #         l.pop(0)
-        #     else:
-        #         arr.append(r[0])
-        #         r.pop(0)
-        # arr.extend(r)
-        # arr.extend(l)
-        j=0
-        i=len(l)-1
-        while i>=0 and j<len(r):
-            if l[i]>r[j]:
-                j=j+1
-            
-
-        return arr
-
-    def  mergeSort(self,arr,start,end):
-        # print(arr)
-        if len(arr)>0:
-            if len(arr)==1:
-                # print(arr)
-                return arr
-            else:
-                half=int((start+end)/2)
-                l=self.mergeSort(arr[:half],start,half-1)
-                lp=list([start,half-1])
-                r=self.mergeSort(arr[half:],half,end)
-                rp=list([half,end])
-
-                return self.merge(l,r,self.line[start:half],self.line[half:end],lp,rp)
+    def merge(self,left,right):
+        i=left[1]
+        j=right[0]
+        for i in range(right[0],right[1]+1):
+            while i>left[0]:
+                if self.array[i]>self.array[i-1]:
+                    self.array[i],self.array[i-1]=self.array[i-1],self.array[i]
+                    self.canvas.move(self.line[i],-10,0)
+                    self.canvas.move(self.line[i-1],10,0)
+                    self.line[i],self.line[i-1]=self.line[i-1],self.line[i]
+                    self.canvas.after(20-int(self.searchSpeed))
+                    self.canvas.update_idletasks()
+                    self.canvas.update()
+                i=i-1
+        return list([left[0],right[1]])
+    def mergeSOrt(self,start,end):
+        if end==start:
+            return list([start,end])
+        else:
+            half=int((start+end)/2)
+            left = self.mergeSOrt(start,half)
+            right =  self.mergeSOrt(half+1,end)
+            return self.merge(left,right)
     def callMergeSort(self):
+        l2=Label(self.app, text = "Merge Sort") 
+        l2.place(x=600,y=10)
         print(self.array)
-        self.array=self.mergeSort(self.array,0,len(self.array)-1)
-        self.printArray()
+        dim=self.mergeSOrt(0,len(self.array)-1)
+        for i in range(len(self.line)):
+            self.canvas.itemconfig(self.line[i],fill='red')
+        # self.printArray()
     def maxHeap(self,i):
         if i>0:
             try:
