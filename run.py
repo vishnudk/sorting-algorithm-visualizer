@@ -1,8 +1,8 @@
 import multiprocessing as mp
 # import numpy
-import mergeSort as ms
+# import mergeSort as ms
 from tkinter import *
-from speech_virus import voice
+
 import random
 import time
 import os
